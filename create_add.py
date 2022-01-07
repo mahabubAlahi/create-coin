@@ -5,7 +5,7 @@ import random
 
 from mnemonic import Mnemonic
 import bip32utils
-from bit import PrivateKeyTestnet
+from bit import PrivateKeyTestnet, Key
 
 app = FastAPI()
 
@@ -46,9 +46,13 @@ def send_coin(item: Item):
     #child_key = root_key.ChildKey(0).ChildKey(0)
     #child_private_wif = child_key.WalletImportFormat()
 
-    #Generate Wallet
-    sender_my_key = PrivateKeyTestnet(sender_root_private_wif)
-    receiver_my_key = PrivateKeyTestnet(receiver_root_private_wif)
+    #Generate Wallet for Test Net
+    #sender_my_key = PrivateKeyTestnet(sender_root_private_wif)
+    #receiver_my_key = PrivateKeyTestnet(receiver_root_private_wif)
+
+    #Generate Wallet for Main Net
+    sender_my_key = Key(sender_root_private_wif)
+    receiver_my_key = Key(receiver_root_private_wif)
 
     #Sender Address
     sender_address = sender_my_key.address
