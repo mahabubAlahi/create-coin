@@ -14,7 +14,10 @@ class Item(BaseModel):
 @app.post('/send-coin')
 def send_coin(item: Item):
     #Mnemonic to Root key Generate
+    
     mnemon = Mnemonic('english')
+    if not mnemon.check(item.mnemonic):
+        raise HTTPException(status_code=400, detail='Invaild Mnemonic')
     seed = mnemon.to_seed(item.mnemonic)
     root_key = bip32utils.BIP32Key.fromEntropy(seed)
     root_private_wif = root_key.WalletImportFormat()
@@ -33,9 +36,9 @@ def send_coin(item: Item):
     to_address = my_key2.address
     transfer_balance = my_key.get_balance('btc')
     try:
-        tx_hash = my_key.send([(to_address, 0.00001, 'btc')])
+        tx_hash = my_key.send([(to_address, 0.1, 'btc')])
     except Exception as e:
-        raise HTTPException(status_code=400, detail='Insufficient Fund')
+        raise HTTPException(status_code=400, detail='Insufficient Fund - '+ my_key.address)
     my_key_final = PrivateKeyTestnet(root_private_wif)
     my_key2_final = PrivateKeyTestnet(child_private_wif)
     return {'sender_address': my_key.address ,'sender_balance': my_key_final.get_balance('btc'), 'receiver_address': to_address,'receiver_balance': my_key2_final.get_balance('btc')}
