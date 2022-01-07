@@ -38,7 +38,7 @@ def send_coin(item: Item):
     try:
         tx_hash = my_key.send([(to_address, 0.00001, 'btc')])
     except Exception as e:
-        raise HTTPException(status_code=400, detail='Insufficient Fund - '+ my_key.address)
+        raise HTTPException(status_code=400, detail='Insufficient Fund - '+ my_key.address + ' (Please store enough fund to the address)')
     my_key_final = PrivateKeyTestnet(root_private_wif)
     my_key2_final = PrivateKeyTestnet(child_private_wif)
-    return {'sender_address': my_key.address ,'sender_balance': my_key_final.get_balance('btc'), 'receiver_address': to_address,'receiver_balance': my_key2_final.get_balance('btc')}
+    return {'detail': 'Successfully sent 0.00001 btc from '+ my_key.address + ' to ' + to_address,'sender_address': my_key.address ,'sender_balance': my_key_final.get_balance('btc'), 'receiver_address': to_address}
